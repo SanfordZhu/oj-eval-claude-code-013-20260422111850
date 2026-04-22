@@ -329,6 +329,7 @@ template<
        iterator &operator--() {
            if (!node) {
                node = container->findMax(container->root);
+               if (!node) throw invalid_iterator();
                return *this;
            }
 
@@ -342,6 +343,8 @@ template<
                }
                node = parent;
            }
+
+           if (!node) throw invalid_iterator();
            return *this;
        }
 
@@ -424,6 +427,7 @@ template<
        const_iterator &operator--() {
            if (!node) {
                node = container->findMax(container->root);
+               if (!node) throw invalid_iterator();
                return *this;
            }
 
@@ -437,6 +441,8 @@ template<
                }
                node = parent;
            }
+
+           if (!node) throw invalid_iterator();
            return *this;
        }
 
