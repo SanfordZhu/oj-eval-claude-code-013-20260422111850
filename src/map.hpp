@@ -142,6 +142,8 @@ template<
    }
 
    Node *eraseNode(Node *node) {
+       if (!node) return nullptr;
+
        tree_size--;
 
        if (!node->left || !node->right) {
@@ -169,16 +171,18 @@ template<
                temp->left = nullptr;
                temp->right = nullptr;
                delete temp;
-               return node;
+               return balance(node);
            }
        } else {
            Node *temp = findMin(node->right);
+           if (!temp) return balance(node);
+
            value_type *oldData = node->data;
            node->data = new value_type(*temp->data);
            delete oldData;
            // Use a helper that doesn't decrement tree_size
            node->right = eraseWithoutDecrement(node->right, temp->data->first);
-           return node;
+           return balance(node);
        }
    }
 
@@ -352,7 +356,7 @@ template<
     * a operator to check whether two iterators are same (pointing to the same memory).
         */
        value_type &operator*() const {
-           if (!node) throw invalid_iterator();
+           if (!node || !node->data) throw invalid_iterator();
            return *node->data;
        }
 
@@ -377,7 +381,7 @@ template<
         */
        value_type *operator->() const
            noexcept {
-           return &(*node->data);
+           return node && node->data ? &(*node->data) : nullptr;
        }
    };
 
@@ -447,7 +451,7 @@ template<
        }
 
        const value_type &operator*() const {
-           if (!node) throw invalid_iterator();
+           if (!node || !node->data) throw invalid_iterator();
            return *node->data;
        }
 
@@ -460,7 +464,7 @@ template<
        }
 
        const value_type *operator->() const noexcept {
-           return &(*node->data);
+           return node && node->data ? &(*node->data) : nullptr;
        }
    };
 
